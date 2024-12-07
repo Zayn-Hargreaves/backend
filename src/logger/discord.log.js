@@ -13,7 +13,6 @@ client.on('ready', ()=>{
     console.log(`Log is as ${client.user.tag}`);
 })
 
-//1310914047734054922
 
 client.login(token, ()=>{
     console.log("ok")
