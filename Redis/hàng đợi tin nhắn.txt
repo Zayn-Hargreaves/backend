@@ -1,0 +1,18 @@
+I. Phỏng vấn
+a. tại sao sử dụng hàng đợi tin nhắn
+- tách kiến trúc service ra
+- 
+b.  ưu, nhược của hàng đợi tin nhắn
+- tăng độ phưc tạp của hệ thống
+- miss tin nhắn
+- tính nhất quán của hệ thống, đôi 
+c. active queue, rabbit queue, rocket mq,kafka, 
+
+hơn redis vì có durable, noack, ttl, persitten
+
+II. 
+- lam để tin nhắn ko bị mất, ko bị duplicate, 
+- đảm bảo thứ tự tin nhắn
+
+- tích lũy tin nhắn 
+V. mô hình pub/sub của hàng đợi tin nhắn

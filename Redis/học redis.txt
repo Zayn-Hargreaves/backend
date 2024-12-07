@@ -1,0 +1,134 @@
+1. kiểu dữ liệu string dùng để dếm, lưu đối tượng với giá trị là 1 chuỗi json hoặc, lưu từng thuộc tính của object (user:1 hoặc user:1:age)
+a. embstring(<44byte)
+b.raw(44byte)
+c.int
+
+2. các lệnh cơ bản của redis-cli
+set str 123456789875432 - set 1 giá trị trong redis
+object encoding str - lấy kiểu của str
+get str - lấy ra giá trị của str trong redis
+exists str - tìm xem str có tồn tại hay không 1/0
+strlen str - tìm độ dài của str
+del str - xóa str
+mset key1 val1 key2 val2 - set 1 loạt key
+mget key1 key2 - get 1 loạt key
+
+khi giá trị str là 1 chuối số nguyên
+incr number- sẽ tăng giá trị của number thêm 1
+incrby number 8 - sẽ tăng giá trị của number thêm 8
+decr number
+decr number 8 
+
+tìm key
+keys "num*" - tìm tất cả key có phần đầu là num (chắc hơi giống sql)
+
+set key val ex 60 - tạo ra key với thời gian sống là 60
+set key val px ex 10000 --(10000ms)
+
+II. kieu du lieu hash: tâp hợp các key-val// ví dụ giỏ hàng nhưng thường sẽ dùng redis json
+các lệnh phổ biến của hash
+1. các câu lệnh cơ bản với hset
+hset key name val- tạo 1 key
+hget key name -- lấy ra val của key
+hmset key1 att1 val1 att2 val2 
+hmget key1 att1 att2
+- nếu muốn xóa 1 trường thì hmset key att1 - att1 sẽ trở thành null
+hlen key1  - trả về số lượng val
+hgetall key1 - trả vè các thuộc tính và giá trị của thuộc tính đó tỏng key
+hexists key1 val - check att đó có trong keyhay không
+hincryBy key1 val 1 - tăng att của key lên 1
+hkeys keys : lâyt tất kả các thuộc tính của keys
+hvals key1; lấy giá trị của key
+hdel key: xóa key
+
+hash để lưu object
+
+III. kiều dữ liệu list - triên khai stack, queue - hàng đợi tin nhắn - xử lý tin nhăn phu hop - xu lý đô tin cậy của tin nhắn
+1. các câu lệnh phổ biến 
+lpush list:01 a b c -push bên trái vào list 01
+lrange list:01 0 -1 - lay toan bo gia ti da push tron redis( theo kieu stack)
+rpush list:01 1 2 3 - pus vao ben phai ngan xep
+lpop  list:01 - xoa phan tu dau tien ben trai
+lpop list:01 2 - xoa hai phan tu ben trai
+rpop list:01 - xoa phan tu ben trai
+
+lrange list:01 0 3- lay 3 gia tri dau
+
+blpop l:ticket ticket:01 - giả sử chỉ có 1 cái vé hai người muốn mua, thì người chạy lệnh blpop đầu tiên sẽ có được vé , người thứ 2 sẽ phải chờ động thái của hệ thống
+
+Lindex list 2; lấy phần tử tại vị trí list[2] của redis nhớ làm mảng lpush giống kiểu stack (tức là ngược lại với mảng)
+
+lrem list 1 7 : lấy vị trí 1 có gía trị trong ngăn xếp là 7
+ltrim list 1 4: chỉ để lại phần tử trong khoảng 1 4
+lset list 1 5 : sửa giá trị vị trí số 1 thành số 5
+linsert list before 8 7 - chèn số 8 vào trước giá trị 7
+linsert list after 9 7 - chèn sô 9 vào sau gía trị 7
+
+kịch bán: producer sử dụng lệnh push để chèn tin nhắn vào hàng đợi, nếu khóa không tồn tại, 1 hàng đợi sẽ trống và hàng đợi tin nhăn sẽ được truyền vào sau 
+consumer sẽ dùng rpop để đọc tin nhắn theo tuần tự. tuy nhiên có điểm rủi ro, là khi producer push 1 message vào thì customer không biết có 1 thông báo sắp ghi
+muốn xử lý thông báo kip thời client cần gọi các lệnh liên tục như dùng vòng lặp rpop, while true thì tin nhắn mới được viết lên => tiêu tốn khi thực thi các lệnh
+giải pháp - dùng blpop để chờ 
+
+IV. Cấu trúc set: tập hợp
+a. kịch bản: lấy phần giống nhau, phần khác nhau của tập hợp 
+tập hợp key val- không hề giồng list - không lưu giá trị lặp lại, không lưu theo thứ tự chèn
+
+b. các lệnh cơ bản
+- sadd key val1 val2 val3 : add các val vào key ( nếu val đã có rồi thì sẽ không add được nữa )
+- smembers key : lấy tất cả các val của key
+- srem key val1 val2: xóa đi các val theo key
+- scard key : xem có bao nhiêu val của key
+- sismember key val1: xem val1 có phải val trong key không
+- srandmember key vol: lấy random vol giá trị từ key
+- spop key vol : xoa đi vol phần tử đầu tiên của key
+- smove key1 key2 val : chuyển giá trị val của key1 sang key 2
+- sinter key1 key2 :lấy các giá trị giống nhau của key1 và key2
+- sdiff key1 key2 ; lấy các giá trị của key1 mà key2 không có
+-
+
+V. Zset ; tập hợp có thử tự 
+a. các lệnh phổ biến ( được bán chạy nhiều nhất)
+zadd key key1 val: thêm 1 cặp giá trị key1 -val vào trong key
+zrevrange key 0 -1 : sắp xếp theo key với giá trị giảm dần của key1
+zrange key 0 -1 : sắp xếp key với giá trị tăng dần của val
+zrem key val : xóa val ra khỏi key
+zcard key : lấy số lượng giá trị của key
+zincrby key gttăng val : tăng 1 lượng giá trị đối với val của key
+zrangebyscore key val1 val2:
+
+b. kịch bản
+- bảng xếp hạng
+
+
+VI. tranaction trong redis
+là 1 tập lệnh cùng 1 lúc tuần từ,và 1 lần 
+- có tính cô lâp giống my sql
+không đảm bảo tính nguyên tử, khi 1 lệnh ko thực hiện được thì lệnh khác vẫn thữ hiện được 
+- các lệnh trong tranaction redis
++ watch : giám sát 1 key, nếu key này bị thay đổi bởi 1 lệnh khác thì khóa lạc quan sẽ không được thực thi
++ multi : bắt đầu tranaction
++ exec: thực hiện giao dịch
++ discard : hủy giao dịch
++ unwacth :hủy theo dõi
+
+b. các bước hàng đợi
+multi + enter :
+nhập cácc lệnh của các loại dữ liệu
+khi nhập xong tất cả các lênh này sẽ đề dược đưa vào queue
+
+nếu muốn chạy tranaction thì exec+ enter còn nếu không thì discard + enter
+
+c. ngoại lệ
+-nếu có 1 câu lệnh bị lỗi biên dich thì nó sẽ hủy toàn bộ tranaction
+- nếu lỗi kiểu khác ví dụ tăng string lên giá trị 1 thì lệnh đó sẽ hủy bỏ còn lại vẫn chạy 
+
+
+VII. pub/sub trong redis (vid 37) - liststream 
+- không phải là 1 message create vì không có đẩy đủ chức năng như 1 message create, cơ chế pub/sub chỉ cho các khách hàng cho phép đăng ký kênh và xuất bản lên các kênh đó, nó hoạt động theo mô hình gọi là tới, nó sẽ đẩy tin nhắn tới, nhưng nó không có chức năng phân phối liên tục và dảm bảo là tin nhắn đó có tới tay người dùng hay không ?, người sub được publish nhưng nó không có hàng đợi và bộ đệm tin nhắn
+- cơ chế 
+
+master-slave mongodb mysql redis
+product : chon thoi gian it ng nhat
+he thong greenblue  dư liệu di vào 2 con, chạy xong ngắt 1 còn
+tách theo khoảng thời gian  1 năm 
+cluster node js
