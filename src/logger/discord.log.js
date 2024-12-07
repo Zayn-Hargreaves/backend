@@ -14,7 +14,7 @@ client.on('ready', ()=>{
 })
 
 //1310914047734054922
-const token = 'MTMxMDkxMjgwNjcyMzI1NjM5MA.G3Eoec.1HA0C2eqQuBzPV9kx2GXP2E5IqiLNBulS_2VCg';
+
 client.login(token, ()=>{
     console.log("ok")
 })
